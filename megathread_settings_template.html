@@ -1,0 +1,325 @@
+<?php if (!extension_loaded('soap')) {
+  die("<h1 style='color:red'>Error: PHP SOAP extentiosn is required for this plugin to work.</h1>");
+} ?>
+
+<!-- ======= Restrict direct access ======== -->
+<?php if ( !defined( 'ABSPATH' ) ) exit; ?>
+<script type="text/javascript">
+/*
+*
+* Tabs JS code
+*
+*/
+jQuery(document).ready(function(){
+		jQuery('#tabs div').hide();
+		jQuery('#tabs div:first').show();
+		jQuery('#tabs ul li:first').addClass('active');
+		jQuery('#tabs ul li a').click(function(){ 
+		jQuery('#tabs ul li').removeClass('active');
+		jQuery(this).parent().addClass('active'); 
+		var currentTab = jQuery(this).attr('href'); 
+		jQuery('#tabs div').hide();
+		jQuery(currentTab).show();
+		return false;
+	});
+});
+
+</script>
+<style type="text/css">
+/*
+*
+* Necessary style for this page
+*
+*/
+#tabs {
+	font-size: 90%;
+	margin: 20px 0;
+}
+#tabs ul {
+	float: left;
+	width: 500px;
+	padding-top: 4px;
+	height:24px;
+}
+#tabs li {
+	margin-left: 8px;
+	list-style: none;
+}
+* html #tabs li {
+	display: inline;
+}
+#tabs li, #tabs li a {
+	float: left;
+}
+#tabs ul li {
+
+border-top:2px #686868 solid;
+	background: #686868;
+}
+#tabs ul li.active {
+	border-top:2px #F5F5F5 solid;
+	background: #F5F5F5;
+}
+#tabs ul li.active a {
+	color: #333333;
+}
+#tabs div {
+	background: #FFF;
+	clear: both;
+	padding: 15px;
+	min-height: 200px;
+	border:1px solid #ccc;
+}
+#tabs div h3 {
+	margin-bottom: 12px;
+	float:left;
+}
+#tabs div p {
+	line-height: 150%;
+}
+#tabs ul li a {
+	text-decoration: none;
+	padding: 8px;
+	color: #fff;
+	font-weight: bold;
+}
+.thumbs {
+	float:left;
+	border:#000 solid 1px;
+	margin-bottom:20px;
+	margin-right:20px;
+}
+-->
+</style>
+<!-- ======= Main container ======== -->
+<div class="wrap">
+<!-- ======= PLugin title ======== -->
+<div id="icon-link-manager" class="icon32"></div><h2><?php echo PLUGIN_TITLE; ?></h2>
+<!-- ======= error show ======== -->
+<?php if ( isset($es_errors) && count( $es_errors ) ) : ?>
+	<div class="error">
+		<ul>
+		<?php
+			foreach ( $es_errors as $err )
+				echo "<li>$err</li>\n";
+		?>
+		</ul>
+	</div>
+<?php endif; ?>
+
+<?php if ( isset($es_messages) && count( $es_messages ) && !count( $es_errors ) ) : ?>
+	<div class="updated">
+		<ul>
+		<?php
+			foreach ( $es_messages as $msg )
+				echo "<li>$msg</li>\n";
+		?>
+		</ul>
+	</div>
+<?php endif; ?>
+<!-- ======= Tabs ======== -->
+<div id="tabs">
+    <ul>
+      <li><a href="#tab-1">Megathread settings</a></li>
+      <li><a href="#tab-2">Megathread options</a></li>
+      <li><a href="#tab-3">Synchronize</a></li>
+      <li><a href="#tab-4">Support</a></li>
+    </ul>
+    <!-- ======= First Tab ======== -->
+    <div id="tab-1">
+    <h3 id="icon-plugins" class="icon32" ></h3 ><span style="font-size:15px; font-weight:bold; line-height:3">Megathread Settings</span>
+     <form method="post" action="">
+	<table class="form-table">
+		<tr class="form-field form-required">
+			<th scope="row">
+				<label for="megathread_server_url">
+					<?php _e('Server URL', 'es_locale'); ?>
+				</label>
+			</th>
+			<td>
+				<input name="megathread_server_url" type="text" id="megathread_server_url" value="<?php echo $server_url; ?>" aria-required="true"> <br /><i style="color:#C00">Server URL should not change.</i>
+			</td>
+		</tr>
+		
+		<tr class="form-field form-required">
+			<th scope="row">
+				<label for="megathread_unique_code">
+					<?php _e('Forum ID', 'es_locale'); ?>
+				</label>
+			</th>
+			<td>
+				<input name="megathread_unique_code" type="text" id="megathread_unique_code" value="<?php echo $unique_code; ?>" aria-required="true"> <i>   Your Megathread Forum ID we sent through confirmation email (example: "534aact8a650a8sf5a06f5ca".) </i>
+			</td>
+		</tr>
+
+		<tr class="form-field form-required">
+			<th scope="row">
+				<label for="megathread_login">
+					<?php _e('Plugin-API Login', 'es_locale'); ?>
+				</label>
+			</th>
+			<td>
+				<input name="megathread_login" type="text" id="user_login" value="<?php echo $login; ?>" aria-required="true"> <i>   Same as your "Community Login" setting in your community profile.  You must create this on your own.</i>
+			</td>
+		</tr>
+
+		<tr class="form-field form-required">
+			<th scope="row">
+				<label for="pass1">
+					<?php _e('Plugin-API Password', 'es_locale'); ?>
+					<span class="description">(<?php _e('twice', 'es_locale'); ?>)</span>
+				</label>
+			</th>
+			<td>
+				<input name="pass1" type="password" id="pass1" autocomplete="off">
+				<br>
+				<input name="pass2" type="password" id="pass2" autocomplete="off">
+				<br>
+                <i>   Same as your "Community Password" setting in your community profile. You must create this on your own.</i>
+			</td>
+		</tr>
+	</table>
+   
+	<p class="submit">
+		<input type="hidden" name="action" value="savedata" />
+		<input type="submit" name="savedata" class="button-primary" value="<?php _e('Save data', 'es_locale'); ?>" />
+	</p>
+</form>
+    </div>
+    <!-- ======= First Tab End ======== -->
+    <!-- ======= Second Tab ======== -->
+    <div id="tab-2">
+     <h3 id="icon-options-general" class="icon32" ></h3 ><span style="font-size:15px; font-weight:bold; line-height:3">Megathread Options</span>
+ <form method="POST" action="">
+    <table>
+    <tr>
+        <td>
+        	<label for="show_tp_header">Show Megathread widget button in header:<span> *</span>: </label>
+        </td>
+        <td>
+            <select name="megathread_header_image">
+            <option value="yes" <?php if(get_option("megathread_header_image")=="yes") { echo "selected"; } ?>>Yes</option>
+            <option value="no" <?php if(get_option("megathread_header_image")=="no") { echo "selected"; } ?> >No</option></select>
+        </td>
+    </tr>
+     
+   <tr style="display:none">
+    	<td>
+        	<label for="megathread_image_avator">Show tooltip for avatars:<span> *</span>: </label>
+        </td>
+        <td>
+         <select name="megathread_image_avator">
+        <option value="yes" <?php if(get_option("megathread_image_avator")=="yes") { echo "selected"; } ?> >Yes</option>
+        <option value="no" <?php if(get_option("megathread_image_avator")=="no") { echo "selected"; } ?> >No</option></select>
+       </td>
+    </tr>
+    <tr>
+    	<td>
+        	<label for="megathread_image_avator">Show tooltip on discussion title:<span> *</span>: </label>
+        </td>
+        <td>
+         <select name="megathread_discussion_avator">
+        <option value="yes" <?php if(get_option("megathread_discussion_avator")=="yes") { echo "selected"; } ?> >Yes</option>
+        <option value="no" <?php if(get_option("megathread_discussion_avator")=="no") { echo "selected"; } ?> >No</option></select>
+       </td>
+    </tr>
+    <tr style="display:none">
+    	<td>
+        	<label for="megathread_local_global_user">Show local/global for user:<span> *</span>: </label>
+        </td>
+        <td>
+         <select name="megathread_local_global_user">
+        <option value="yes" <?php if(get_option("megathread_local_global_user")=="yes") { echo "selected"; } ?> >Yes</option>
+        <option value="no" <?php if(get_option("megathread_local_global_user")=="no") { echo "selected"; } ?> >No</option></select>
+       </td>
+    </tr>
+    <tr style="display:none">
+    	<td>
+        	<label for="megathread_local_global_community">Show local/global for community:<span> *</span>: </label>
+        </td>
+        <td>
+         <select name="megathread_local_global_community">
+        <option value="yes" <?php if(get_option("megathread_local_global_community")=="yes") { echo "selected"; } ?> >Yes</option>
+        <option value="no" <?php if(get_option("megathread_local_global_community")=="no") { echo "selected"; } ?> >No</option></select>
+       </td>
+    </tr>
+    <tr style="display:none">
+    
+    	<td>
+        	<label for="megathread_local_global_discussion">Show local/global for discussion:<span> *</span>: </label>
+        </td>
+        <td>
+         <select name="megathread_local_global_discussion">
+        <option value="yes" <?php if(get_option("megathread_local_global_discussion")=="yes") { echo "selected"; } ?> >Yes</option>
+        <option value="no" <?php if(get_option("megathread_local_global_discussion")=="no") { echo "selected"; } ?> >No</option></select>
+       </td>
+    </tr>
+    
+     <tr style="display:none">
+    	<td>
+        	<label for="megathread_local_global_discussion">On register add user to megathread:<span> *</span>: </label>
+        </td>
+        <td>
+         <select name="megathread_register_api">
+        <option value="yes" <?php if(get_option("megathread_register_api")=="yes") { echo "selected"; } ?> >Yes</option>
+        <option value="no" <?php if(get_option("megathread_register_api")=="no") { echo "selected"; } ?> >No</option></select>
+       </td>
+    </tr>
+   <tr>
+   <td colspan="2"><span style="font-size:15px; font-weight:bold; line-height:3">Megathread widget button options</span></td>
+   </tr>
+   <tr>
+   <td><label>Position:</label></td>
+   <td>
+   <select name="megathread_widget_position">
+   <option value="static" <?php if(get_option("megathread_widget_position")=="static") { echo "selected"; } ?>>static</option>
+   <option value="absolute" <?php if(get_option("megathread_widget_position")=="absolute") { echo "selected"; } ?>>absolute</option>
+   <option value="fixed" <?php if(get_option("megathread_widget_position")=="fixed") { echo "selected"; } ?>>fixed</option>
+   <option value="relative" <?php if(get_option("megathread_widget_position")=="relative") { echo "relative"; } ?>>relative</option>
+   <option value="initial" <?php if(get_option("megathread_widget_position")=="initial") { echo "selected"; } ?>>initial</option>
+   <option value="inherit" <?php if(get_option("megathread_widget_position")=="inherit") { echo "selected"; } ?>>inherit</option>
+   </select>
+   </td>
+   </tr>
+   <tr>
+   <td><label>Extra CSS:</label>
+   <td><textarea name="megathread_widget_css"><?php echo get_option("megathread_widget_css");?></textarea></td>
+   </td>
+   </tr>
+    </table>
+    <p class="submit">
+		<input type="hidden" name="action" value="updateoptions" />
+		<input type="submit" name="savedata" class="button-primary" value="<?php _e('Update options', 'es_locale'); ?>" />
+	</p>
+</form>
+
+    </div>
+    <!-- ======= Second Tab End ======== -->
+    <!-- ======= Third Tab ======== -->
+    <div id="tab-3">
+    <h3 id="icon-plugins" class="icon32" ></h3 ><span style="font-size:15px; font-weight:bold; line-height:3">Synchronize</span>
+    <p> Allow Megathread to generate past data through past discussions. </p>
+    <input type="button" name="synchronize" class="button-primary"  onclick="StartSynchronization();" value="Start" /><br /><span id="syn_msg"></span>
+    </div>
+    <!-- ======= Third Tab End ======== -->
+    <!-- ======= Forth Tab ======== -->
+    <div id="tab-4">
+    <h3 id="icon-edit-comments" class="icon32" ></h3 ><span style="font-size:15px; font-weight:bold; line-height:3">Support</span>
+    <h4>What does "Forum ID" mean in my settings? </h4>
+    <p>Forum ID is the Megathread ID for your community. This will be provided in email along with Server URL when you registered with Megathread</p>
+    <h4>Can I change the Server URL?</h4>
+    <p>No, Server URL is actually the Megathread Server URL and is being used for all communication between Megathread and your platform.</p>
+    <h4>How to get my "Community Login" and "Community Password?" </h4>
+    <p> Log into Megathread (as a community) and go to your Community Settings and you will see the fields under Megathread Integration. Enter them on your own.</p>
+    <h4>How to setup Authorization URL?</h4>
+    <p>Authorization URL is the path to <b><i>megathread_auth.php</i></b> on your server. If you are using Megathread's WP plugin, it will be <i><?php echo site_url(); ?>/wp-content/plugins/megathread/megathread_auth.php</i>
+    <h4>What if I have another question?</h4>
+    <p> You can contact support <a href="http://megathread.com/support/contact/" target="_blank"> Here </a>
+    
+    </div>
+    <!-- ======= Forth Tab End ======== -->
+    
+  </div>
+<!-- ======= Tabs End ======== -->
+</div>
+<!-- ======= Main container end ======== -->
